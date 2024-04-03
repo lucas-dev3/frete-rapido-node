@@ -1,73 +1,127 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# Teste tecnico node - frete rapido
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Este projeo é uma API para fazer cotações de frete e analise de metricas. Permite que você busque cotações e busque as metricas.
 
-## Description
+- Quantidade de resultados por transportadora;
+- Total de “preco_frete” por transportadora;
+- Média de “preco_frete” por transportadora;
+- O frete mais barato geral;
+- O frete mais caro geral;
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+
+
+
+## Instalação
+
+Com Docker.
 
 ```bash
-$ npm install
+  docker compose up --build
 ```
 
-## Running the app
+Local
 
 ```bash
-# development
-$ npm run start
+  npm i
+  npm run start:dev
+```
+## Variáveis de Ambiente
 
-# watch mode
-$ npm run start:dev
+Para rodar esse projeto, você vai precisar adicionar as seguintes variáveis de ambiente no seu .env
 
-# production mode
-$ npm run start:prod
+`MONGODB_URI`
+
+`MONGO_INITDB_ROOT_USERNAME`
+
+`MONGO_INITDB_ROOT_PASSWORD`
+
+`FR_TOKEN`
+
+`FR_PLATAFORM_CODE`
+
+`FR_REGISTERED_NUMBER`
+
+`FR_BASE_URL`
+
+
+## Documentação da API
+
+#### Retorna as metricas
+
+```http
+  GET /api/v1/quote?last_quotes={10}
 ```
 
-## Test
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `last_quotes` | `string` | **Opcional**. A chave da sua API |
 
-```bash
-# unit tests
-$ npm run test
+#### Solicita a cotação
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```http
+  POST /api/v1/quote
 ```
 
-## Support
+#### Body
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```http
+  {
+   "recipient":{
+      "address":{
+         "zipcode":"01311000"
+      }
+   },
+   "volumes":[
+      {
+         "category":7,
+         "amount":1,
+         "unitary_weight":5,
+         "price":349,
+         "sku":"abc-teste-123",
+         "height":0.2,
+         "width":0.2,
+         "length":0.2
+      },
+      {
+         "category":7,
+         "amount":2,
+         "unitary_weight":4,
+         "price":556,
+         "sku":"abc-teste-527",
+         "height":0.4,
+         "width":0.6,
+         "length":0.15
+      }
+   ]
+}
+```
 
-## Stay in touch
+#### Response
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```http
+ {
+   "carrier":[
+      {
+         "name":"EXPRESSO FR",
+         "service":"Rodoviário",
+         "deadline":"3",
+         "price":17
+      },
+      {
+         "name":"Correios",
+         "service":"SEDEX",
+         "deadline":1,
+         "price":20.99
+      }
+   ]
+}
+```
 
-## License
 
-Nest is [MIT licensed](LICENSE).
+
+## Para acessar a documentaçao Swagger
+
+ - http://localhost:3000/api-docs
+
